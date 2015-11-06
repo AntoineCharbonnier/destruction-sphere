@@ -1,8 +1,8 @@
-# Burn - Three js experiment
+# Destruction Sphere - Three js experiment
 
-A little experiment with burn effect for Codevember
+A little experiment with destruction effect
 
-[CodePen](http://codepen.io/AntoineCharbonnier/pen/GpBJEw)
+<!-- [CodePen](http://codepen.io/AntoineCharbonnier/pen/GpBJEw) -->
 
 ## INSTALL
 
