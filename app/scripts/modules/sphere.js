@@ -56,26 +56,6 @@ class Sphere {
 
     }
 
-
-    // LIGHTS
-
-    // var ambient = new THREE.AmbientLight( 0x050505 );
-    // scene.add( ambient );
-
-    // directionalLight = new THREE.DirectionalLight( 0xffffff, 2 );
-    // directionalLight.position.set( 2, 1.2, 10 ).normalize();
-    // scene.add( directionalLight );
-
-    // directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
-    // directionalLight.position.set( - 2, 1.2, -10 ).normalize();
-    // scene.add( directionalLight );
-
-    // pointLight = new THREE.PointLight( 0xffaa00, 2 );
-    // pointLight.position.set( 2000, 1200, 10000 );
-    // scene.add( pointLight );
-
-
-
     //  TEXTURE
     var r    = "img/";
     var urls = [ 
@@ -152,13 +132,10 @@ class Sphere {
       uniforms:       this.uniforms,
       vertexShader:   this.vertexShader,
       fragmentShader: this.fragmentShader,
-      // wireframe: true,
-      // wireframeLinewidth: 1
     });
 
     this.meshMaterial2 = mlib["Bronze"]
     
-    // this.materials  = [this.meshMaterial, this.meshMaterial2]
 
     this.mesh = new THREE.Object3D()
 
@@ -167,7 +144,6 @@ class Sphere {
       this.meshMaterial
     ));
 
-    // this.mesh.add( THREE.SceneUtils.createMultiMaterialObject(this.geometry, this.materials) )
 
     this.mesh.position.y = 0;
     this.mesh.position.z = -15;
@@ -183,43 +159,40 @@ class Sphere {
     };
     this.clock           = Date.now();
     
-    this.speed           = 0.0003;
-    this.weight          = 0.05;
+    this.speed           = 0.00003;
+    this.weight          = 0.4;
     this.opacity         = 0.0;
 
     this.step = 0.001
     this.amplitude = 0
 
+    this.stick = true
 
     return this;
   }
 
   update( ts ) {
-    // console.log(1.0 + (Math.sin( ts * 0.0005 )))
-    // this.meshMaterial.uniforms[ 'time' ].value = this.speed * ( Date.now() - this.clock );
-    // console.log(this.amplitude)
 
-
-
-    if(this.amplitude > 0.2 || this.amplitude < 0){
+    if(this.amplitude > 0.2 || this.amplitude < -0.2){
       this.step = -this.step
     }
-
-    this.meshMaterial.uniforms[ 'opacity' ].value  = 1.0;
-    this.meshMaterial.uniforms[ 'explode' ].value  = this.explode;
-    this.meshMaterial.uniforms[ 'time' ].value        = this.speed * ( Date.now() - this.clock );
-    this.meshMaterial.uniforms[ 'weight' ].value      = this.weight;
-
-
-    if(this.explode == 0.0){
-      this.amplitude = 0
+    
+    if(this.amplitude < 0){
+      this.explode = 0.0
     }
+    else{
+      this.explode = 1.0
+    }
+
+    this.meshMaterial.uniforms[ 'opacity' ].value = 1.0;
+    this.meshMaterial.uniforms[ 'explode' ].value = this.explode;
+    this.meshMaterial.uniforms[ 'time' ].value    = this.speed * ( Date.now() - this.clock );
+    this.meshMaterial.uniforms[ 'weight' ].value  = this.weight;
+
 
     this.amplitude+= this.step
 
     this.meshMaterial.uniforms.amplitude.value = this.amplitude;
-    // this.meshMaterial.uniforms.amplitude.value = Math.min(Math.max(1.0 + Math.sin( ts * 0.0005 ), 0), 1);
-
   }
 
   getMesh() {

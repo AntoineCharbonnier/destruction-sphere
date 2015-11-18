@@ -16,6 +16,9 @@ class World {
     this.terrain   = null;
     this.ground   = null;
     this.mouseY = null;
+
+    this.focalLength = 0
+
     this.container = options.container || document.body;
 
     this.params = {
@@ -49,9 +52,12 @@ class World {
     });
 
   	this.renderer.setSize( this.params.width, this.params.height )
-    this.renderer.setClearColor( 0xffffff, 0 )
+    this.renderer.setClearColor( 0x000000, 0 )
 
     this.mouseY = 0
+
+    this.effect = new THREE.ParallaxBarrierEffect( this.renderer );
+    this.effect.setSize( this.params.width, this.params.height );
 
   	this.container.appendChild( this.renderer.domElement )
 
@@ -81,6 +87,27 @@ class World {
       light.target.position.set( 0, 0, 0 )
       light.castShadow = true
       this.scene.add( light )
+
+
+      // LIGHTS
+
+      var ambient2 = new THREE.AmbientLight( 0x050505 );
+      this.scene.add( ambient2 );
+
+      var directionalLight2 = new THREE.DirectionalLight( 0xffffff, 2 );
+      directionalLight2.position.set( 2, 1.2, 10 ).normalize();
+      this.scene.add( directionalLight2 );
+
+      var directionalLight3 = new THREE.DirectionalLight( 0xffffff, 1 );
+      directionalLight3.position.set( - 2, 1.2, -10 ).normalize();
+      this.scene.add( directionalLight3 );
+
+      var pointLight = new THREE.PointLight( 0xffaa00, 2 );
+      pointLight.position.set( 2000, 1200, 10000 );
+      this.scene.add( pointLight );
+
+
+
   }
 
   addSphere() {
@@ -125,8 +152,21 @@ class World {
   render() {
     if (!this.params.active)
         this.params.active = true;
-      this.renderer.render( this.scene, this.camera );
+
+      var timer = 10
       
+      if(this.sphere.explode == 1.0){
+
+        this.focalLength -= timer
+
+        this.effect.focalLength = this.focalLength
+
+        this.effect.render( this.scene, this.camera, this.focalLength );
+      }
+      else{
+        this.renderer.render( this.scene, this.camera );
+      }
+
       // var timer = -0.0002 * Date.now();
       // this.camera.position.y += ( - this.mouseY - this.camera.position.y ) * .000005;
 
