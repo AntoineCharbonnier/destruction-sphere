@@ -1,6 +1,3 @@
-
-
-
 varying vec2 vUv;
 uniform sampler2D tExplosion;
 varying vec3 vReflect;

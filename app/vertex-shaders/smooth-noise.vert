@@ -172,6 +172,14 @@ uniform float weight;
 uniform float periodPn;
 varying float d;
 
+uniform float amplitude;
+attribute vec3 customColor;
+attribute vec3 displacement;
+varying vec3 vNormal;
+varying vec3 vColor;
+
+uniform float explode;
+
 float stripes( float x, float f) {
   float PI = 3.14159265358979323846264;
   float t = .5 + .5 * sin( f * 2.0 * PI * x);
@@ -192,6 +200,13 @@ void main() {
 
   vUv = uv;
 
+  vec3 light = vec3( 1.0 );
+  light = normalize( light );
+
+
+  vNormal = normal;
+  vColor = customColor;
+
   vec4 mPosition = modelMatrix * vec4( position, 1.0 );
   vec3 nWorld = normalize( mat3( modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz ) * normal );
   vReflect = normalize( reflect( normalize( mPosition.xyz - cameraPosition ), nWorld ) );
@@ -201,14 +216,19 @@ void main() {
   float noise = 20.0 *  -.10 * turbulence( .5 * normal + time );
   //float noise = - stripes( normal.x + 2.0 * turbulence( normal ), 1.6 );
 
-  float displacement = - weight * noise;
-  displacement += periodPn * pnoise( 0.06 * position + vec3( 2.0 * time ), vec3( 1.0 ) );
-  
-  
-  vec3 newPosition = position + normal * vec3( displacement );
-  ao = noise;
-  ao2 = displacement;
-  gl_Position = projectionMatrix * modelViewMatrix * vec4( newPosition, 1.0 );
+  if( explode == 1.0 ){  
+    vec3 newPosition = pos + vNormal * amplitude * displacement;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4( newPosition, 1.0 );
+  }
+  else{
+    float displacement = - weight * noise;
+    displacement += periodPn * pnoise( 0.06 * position + vec3( 2.0 * time ), vec3( 1.0 ) );
+    
+    vec3 newPosition = position + normal * vec3( displacement );
+    ao = noise;
+    ao2 = displacement;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4( newPosition, 1.0 );
+  }
 
 }
 

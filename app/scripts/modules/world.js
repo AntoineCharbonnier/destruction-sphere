@@ -15,6 +15,7 @@ class World {
     this.sphere   = null;
     this.terrain   = null;
     this.ground   = null;
+    this.mouseY = null;
     this.container = options.container || document.body;
 
     this.params = {
@@ -50,6 +51,7 @@ class World {
   	this.renderer.setSize( this.params.width, this.params.height )
     this.renderer.setClearColor( 0xffffff, 0 )
 
+    this.mouseY = 0
 
   	this.container.appendChild( this.renderer.domElement )
 
@@ -108,13 +110,35 @@ class World {
     this.sphere    = null;
   }
 
+  onDocumentMouseMove(event) {
+    this.mouseY = ( event.clientY - window.innerHeight );
+  }
+  onDocumentClick(event) {
+    if(this.sphere.explode == 1.0){
+      this.sphere.explode = 0.0
+    }
+    else{
+      this.sphere.explode = 1.0
+    }
+  }
+
   render() {
     if (!this.params.active)
         this.params.active = true;
       this.renderer.render( this.scene, this.camera );
+      
+      // var timer = -0.0002 * Date.now();
+      // this.camera.position.y += ( - this.mouseY - this.camera.position.y ) * .000005;
+
+      // this.camera.position.x = 1 * Math.cos( timer );
+      // this.camera.position.z = 1 * Math.sin( timer );
+
+      // this.camera.lookAt( this.scene.position );
   }
 
   addListeners() {
+    document.addEventListener('mousemove', this.onDocumentMouseMove.bind(this), false);
+    document.addEventListener('click', this.onDocumentClick.bind(this), false);
   	window.addEventListener( 'resize', this.onWindowResize.bind( this ), false );
   	this.keyboard = new Keyboard();	
     this.keyboard.addObject( this.sphere.getMesh() );

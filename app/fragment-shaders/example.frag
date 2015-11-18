@@ -3,9 +3,9 @@ varying vec3 vColor;
 
 void main() {
 
-	const float ambient = 0.4;
+	const float ambient = 0.5;
 
-	vec3 light = vec3( 1.0 );
+	vec3 light = vec3( 1.0, 0.0, 0.5 );
 	light = normalize( light );
 
 	float directional = max( dot( vNormal, light ), 0.0 );
